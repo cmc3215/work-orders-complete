@@ -126,7 +126,7 @@ NS.DefaultSavedVariables = function()
 		["characters"] = {},
 		["alertType"] = "next",
 		["alertSeconds"] = ( 8 * 3600 ), -- 8 hr
-		["hideCharacterRealms"] = false,
+		["showCharacterRealms"] = true,
 	};
 end
 
@@ -143,9 +143,9 @@ end
 NS.Upgrade = function()
 	local vars = NS.DefaultSavedVariables();
 	local version = NS.db["version"];
-	-- 1.2
-	if version < 1.2 then
-		NS.db["hideCharacterRealms"] = vars["hideCharacterRealms"];
+	-- 1.3
+	if version < 1.3 then
+		NS.db["showCharacterRealms"] = vars["showCharacterRealms"];
 	end
 	--
 	NS.db["version"] = NS.version;
