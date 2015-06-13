@@ -97,7 +97,7 @@ NS.options.cfg = {
 										GameTooltip:SetOwner( self, "ANCHOR_RIGHT" );
 										GameTooltip:SetText( "|T" .. NS.buildingInfo[items[k]["name"]].icon .. ":16|t " .. items[k]["name"] );
 										for _,c in ipairs( items[k]["characters"] ) do
-											local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
+											local cn = NS.db["showCharacterRealms"] and c["name"] or strsplit( "-", c["name"], 2 );
 											GameTooltip:AddLine( cn, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
 										end
 										GameTooltip:Show();
@@ -107,7 +107,7 @@ NS.options.cfg = {
 										GameTooltip:SetOwner( self, "ANCHOR_TOP" );
 										GameTooltip:SetText( "|T" .. NS.buildingInfo[items[k]["name"]].icon .. ":16|t " .. items[k]["name"] .. " - " .. column );
 										for _,c in ipairs( items[k]["characters"] ) do
-											local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
+											local cn = NS.db["showCharacterRealms"] and c["name"] or strsplit( "-", c["name"], 2 );
 											if column == "Ready" then
 												GameTooltip:AddDoubleLine( cn, c["ordersReady"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
 											elseif column == "In. Prog" then
@@ -168,7 +168,7 @@ NS.options.cfg = {
 					tooltip = function()
 						GameTooltip:SetText( "|TInterface\\ICONS\\inv_garrison_resource:16|t " .. L["Garrison Cache - Ready for pickup"] );
 						for _,c in ipairs( NS.allCharacters.garrisonCache["characters"] ) do -- Adding all characters with a cache that are being monitored
-							local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
+							local cn = NS.db["showCharacterRealms"] and c["name"] or strsplit( "-", c["name"], 2 );
 							GameTooltip:AddDoubleLine( cn, c["gCache"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
 						end
 						if #NS.allCharacters.garrisonCache["characters"] == 0 then -- No characters with a cache being monitored
@@ -186,7 +186,7 @@ NS.options.cfg = {
 					tooltip = function()
 						GameTooltip:SetText( "|TInterface\\ICONS\\inv_garrison_resource:16|t " .. L["Garrison Cache - Time Remaining"] );
 						for _,c in ipairs( NS.allCharacters.garrisonCache["characters"] ) do -- Adding all characters with a cache that are being monitored
-							local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
+							local cn = NS.db["showCharacterRealms"] and c["name"] or strsplit( "-", c["name"], 2 );
 							GameTooltip:AddDoubleLine( cn, NS.SecondsToStrTime( c["fullSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
 						end
 						if #NS.allCharacters.garrisonCache["characters"] == 0 then -- No characters with a cache being monitored
@@ -206,7 +206,7 @@ NS.options.cfg = {
 					size = { 170, 32 },
 					setPoint = { "TOPRIGHT", "$parentScrollFrame", "BOTTOMRIGHT", 31, -12 },
 					tooltip = function()
-						local cn = NS.db["hideCharacterRealms"] and strsplit( "-", NS.currentCharacter.name, 2 ) or NS.currentCharacter.name;
+						local cn = NS.db["showCharacterRealms"] and NS.currentCharacter.name or strsplit( "-", NS.currentCharacter.name, 2 );
 						GameTooltip:SetText( cn .. " - " .. L["Time Remaining"] );
 						for _,building in ipairs( NS.currentCharacter.buildings ) do -- Adding all buildings that are being monitored
 							GameTooltip:AddDoubleLine( "|T" .. NS.buildingInfo[building["name"]].icon .. ":16|t " .. NS.FactionBuildingName( NS.currentCharacter.faction, building["name"] ), NS.SecondsToStrTime( building["ordersOutSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
@@ -232,7 +232,7 @@ NS.options.cfg = {
 					setPoint = { "RIGHT", "#sibling", "LEFT", -10, 0 },
 					normalTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-RACES",
 					tooltip = function()
-						local cn = NS.db["hideCharacterRealms"] and strsplit( "-", NS.currentCharacter.name, 2 ) or NS.currentCharacter.name;
+						local cn = NS.db["showCharacterRealms"] and NS.currentCharacter.name or strsplit( "-", NS.currentCharacter.name, 2 );
 						GameTooltip:SetText( cn .. " - " .. L["Ready for pickup"] );
 						for _,building in ipairs( NS.currentCharacter.buildings ) do
 							GameTooltip:AddDoubleLine( "|T" .. NS.buildingInfo[building["name"]].icon .. ":16|t " .. NS.FactionBuildingName( NS.currentCharacter.faction, building["name"] ), building["ordersReady"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
@@ -296,9 +296,9 @@ NS.options.cfg = {
 					setPoint = { "LEFT", "#sibling", "RIGHT", -12, -1 },
 					buttons = function()
 						local t = {};
-						for ck,character in ipairs( NS.db["characters"] ) do
-							if character["gCacheSize"] > 0 then -- Exclude characters without a Garrison Cache
-								local cn = NS.db["hideCharacterRealms"] and strsplit( "-", character["name"], 2 ) or character["name"];
+						for ck,c in ipairs( NS.db["characters"] ) do
+							if c["gCacheSize"] > 0 then -- Exclude characters without a Garrison Cache
+								local cn = NS.db["showCharacterRealms"] and c["name"] or strsplit( "-", c["name"], 2 );
 								tinsert( t, { cn, ck } );
 							end
 						end
@@ -460,10 +460,10 @@ NS.options.cfg = {
 					end,
 					dbpc = "showMinimapButton",
 				} );
-				NS.CheckButton( "hideCharacterRealmsCheckButton", SubFrame, L["Hide Character Realms"], {
+				NS.CheckButton( "showCharacterRealmsCheckButton", SubFrame, L["Show Character Realms"], {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
-					tooltip = L["Removes realm after name"],
-					db = "hideCharacterRealms",
+					tooltip = L["Show realm after name"],
+					db = "showCharacterRealms",
 				} );
 			end,
 			Refresh			= function( SubFrame )
@@ -471,7 +471,7 @@ NS.options.cfg = {
 				_G[sfn .. "AlertTypeDropDownMenu"]:Reset( NS.db["alertType"] );
 				_G[sfn .. "AlertSecondsDropDownMenu"]:Reset( NS.db["alertSeconds"] );
 				_G[sfn .. "showMinimapButtonCheckButton"]:SetChecked( NS.dbpc["showMinimapButton"] );
-				_G[sfn .. "hideCharacterRealmsCheckButton"]:SetChecked( NS.db["hideCharacterRealms"] );
+				_G[sfn .. "showCharacterRealmsCheckButton"]:SetChecked( NS.db["showCharacterRealms"] );
 			end,
 		},
 		{
