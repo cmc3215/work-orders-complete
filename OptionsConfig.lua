@@ -462,7 +462,7 @@ NS.options.cfg = {
 				} );
 				NS.CheckButton( "showCharacterRealmsCheckButton", SubFrame, L["Show Character Realms"], {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
-					tooltip = L["Show realm after name"],
+					tooltip = L["Show or hide\ncharacter realms"],
 					db = "showCharacterRealms",
 				} );
 			end,

@@ -199,7 +199,7 @@ NS.StrTimeToSeconds = function( str )
 		elseif i == "sec" then
 			return 1;
 		else -- i == "day" then
-			-- Upon constuction complete, NOT activation, of a previously owned building, Work Orders that were in progress are lumped together as one.
+			-- Upon constuction complete, NOT activation, of a previously owned building with Work Orders that were in progress are lumped together as one.
 			-- This means, that if there were 2 Work Orders in progress, the time might be 8 hr, but if it were 20 Work Orders, it would be days.
 			--
 			-- As if that wasn't odd enough, "day" is encoded and has a length of 11 instead of 3, which is converted to "days" when passed to a function.
@@ -363,7 +363,15 @@ NS.UpdateCharacter = function()
 				["ordersReady"] = shipmentsReady,								-- nil if no orders
 				["ordersTotal"] = shipmentsTotal,								-- nil if no orders
 				["ordersDuration"] = duration,									-- nil if no orders
-				["ordersNextSeconds"] = NS.StrTimeToSeconds( timeleftString ),	-- 0 if no orders
+				["ordersNextSeconds"] = ( function()							-- 0 if no orders
+					local ordersNextSeconds = NS.StrTimeToSeconds( timeleftString );
+					if duration and ordersNextSeconds > duration then
+						-- Rebuilt buildings with more than one preexisting Work Order in progress have all orders lumped into one large order.
+						-- This may make Orders Ready calculations inaccurate temporarily, but will correct itself when the lumped order completes.
+						ordersNextSeconds = duration - 1;
+					end
+					return ordersNextSeconds;
+				end )(),
 				["lastTimeUpdated"] = time(),
 			} );
 			--
