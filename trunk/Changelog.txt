@@ -1,7 +1,15 @@
+**1.4**
+* Release date: 06/13/2015
+* Bug fix, rebuilding a previously owned building that also had more than 1 Work Order in progress caused "Ready" to be negative
+
 **1.3**
 * Release date: 06/13/2015
 * Bug fix, rebuilding a previously owned building that also had more than 6-7 Work Orders in progress caused LUA error due to time til next order being days
 * New option on "Options" tab "Show Character Realms", the default is checked
+
+**1.2**
+* Release date: 06/13/2015
+* Not released
 
 **1.1**
 * Release date: 06/03/2015
