@@ -126,6 +126,7 @@ NS.DefaultSavedVariables = function()
 		["characters"] = {},
 		["alertType"] = "next",
 		["alertSeconds"] = ( 8 * 3600 ), -- 8 hr
+		["hideCharacterRealms"] = false,
 	};
 end
 
@@ -142,9 +143,9 @@ end
 NS.Upgrade = function()
 	local vars = NS.DefaultSavedVariables();
 	local version = NS.db["version"];
-	-- 1.1
-	if version < 1.1 then
-		-- Upgrades
+	-- 1.2
+	if version < 1.2 then
+		NS.db["hideCharacterRealms"] = vars["hideCharacterRealms"];
 	end
 	--
 	NS.db["version"] = NS.version;
@@ -154,9 +155,9 @@ end
 NS.UpgradePerCharacter = function()
 	local varspercharacter = NS.DefaultSavedVariablesPerCharacter();
 	local version = NS.dbpc["version"];
-	-- 1.1
-	if version < 1.1 then
-		-- Upgrades
+	-- 1.2
+	if version < 1.2 then
+		-- No upgrades
 	end
 	--
 	NS.dbpc["version"] = NS.version;
@@ -189,6 +190,7 @@ end
 --
 NS.StrTimeToSeconds = function( str )
 	if not str then return 0; end
+	local t1, i1, t2, i2 = strsplit( " ", str ); -- x day   -   x day x hr   -   x hr y min   -   x hr   -   x min   -   x sec
 	local M = function( i )
 		if i == "hr" then
 			return 3600;
@@ -196,11 +198,18 @@ NS.StrTimeToSeconds = function( str )
 			return 60;
 		elseif i == "sec" then
 			return 1;
+		else -- i == "day" then
+			-- Upon constuction complete, NOT activation, of a previously owned building, Work Orders that were in progress are lumped together as one.
+			-- This means, that if there were 2 Work Orders in progress, the time might be 8 hr, but if it were 20 Work Orders, it would be days.
+			--
+			-- As if that wasn't odd enough, "day" is encoded and has a length of 11 instead of 3, which is converted to "days" when passed to a function.
+			-- So, until I figure out a more elegant solution, if no match is found, then it must be the encoded word "day".
+			return 86400;
 		end
 	end
-	local t1, i1, t2, i2 = strsplit( " ", str ); -- x hr y min   -   x hr   -   x min   -   x sec
 	return t1 * M( i1 ) + ( t2 and t2 * M( i2 ) or 0 );
 end
+
 --
 NS.BuildingName = function( name )
 	local sharedNames = {
