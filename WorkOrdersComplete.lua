@@ -155,10 +155,10 @@ end
 NS.UpgradePerCharacter = function()
 	local varspercharacter = NS.DefaultSavedVariablesPerCharacter();
 	local version = NS.dbpc["version"];
-	-- 1.2
-	if version < 1.2 then
+	-- 1.x
+	--if version < 1.x then
 		-- No upgrades
-	end
+	--end
 	--
 	NS.dbpc["version"] = NS.version;
 end
