@@ -70,7 +70,7 @@ NS.options.cfg = {
 					fontObject = "GameFontNormalSmall",
 					OnClick = function()
 						SubFrame:Refresh();
-						NS.Print( "Monitor refreshed" );
+						NS.Print( "Monitor tab refreshed" );
 					end,
 				} );
 				NS.ScrollFrame( "ScrollFrame", SubFrame, {
@@ -96,8 +96,9 @@ NS.options.cfg = {
 									local IconOnEnter = function( self )
 										GameTooltip:SetOwner( self, "ANCHOR_RIGHT" );
 										GameTooltip:SetText( "|T" .. NS.buildingInfo[items[k]["name"]].icon .. ":16|t " .. items[k]["name"] );
-										for ck, c in pairs( items[k]["characters"] ) do
-											GameTooltip:AddLine( c["name"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
+										for _,c in ipairs( items[k]["characters"] ) do
+											local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
+											GameTooltip:AddLine( cn, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
 										end
 										GameTooltip:Show();
 										b:LockHighlight();
@@ -105,17 +106,18 @@ NS.options.cfg = {
 									local DataButtonOnEnter = function( self, column )
 										GameTooltip:SetOwner( self, "ANCHOR_TOP" );
 										GameTooltip:SetText( "|T" .. NS.buildingInfo[items[k]["name"]].icon .. ":16|t " .. items[k]["name"] .. " - " .. column );
-										for ck, c in pairs( items[k]["characters"] ) do
+										for _,c in ipairs( items[k]["characters"] ) do
+											local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
 											if column == "Ready" then
-												GameTooltip:AddDoubleLine( c["name"], c["ordersReady"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
+												GameTooltip:AddDoubleLine( cn, c["ordersReady"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
 											elseif column == "In. Prog" then
-												GameTooltip:AddDoubleLine( c["name"], c["ordersInProgress"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
+												GameTooltip:AddDoubleLine( cn, c["ordersInProgress"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
 											elseif column == "Capacity" then
-												GameTooltip:AddDoubleLine( c["name"], c["ordersCapacity"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
+												GameTooltip:AddDoubleLine( cn, c["ordersCapacity"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
 											elseif column == "Next Out" then
-												GameTooltip:AddDoubleLine( c["name"], NS.SecondsToStrTime( c["ordersOutSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
+												GameTooltip:AddDoubleLine( cn, NS.SecondsToStrTime( c["ordersOutSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
 											elseif column == "All Out" then
-												GameTooltip:AddDoubleLine( c["name"], NS.SecondsToStrTime( c["ordersOutSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
+												GameTooltip:AddDoubleLine( cn, NS.SecondsToStrTime( c["ordersOutSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
 											end
 										end
 										GameTooltip:Show();
@@ -166,7 +168,8 @@ NS.options.cfg = {
 					tooltip = function()
 						GameTooltip:SetText( "|TInterface\\ICONS\\inv_garrison_resource:16|t " .. L["Garrison Cache - Ready for pickup"] );
 						for _,c in ipairs( NS.allCharacters.garrisonCache["characters"] ) do -- Adding all characters with a cache that are being monitored
-							GameTooltip:AddDoubleLine( c["name"], c["gCache"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
+							local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
+							GameTooltip:AddDoubleLine( cn, c["gCache"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
 						end
 						if #NS.allCharacters.garrisonCache["characters"] == 0 then -- No characters with a cache being monitored
 							GameTooltip:AddLine( L["No characters being monitored"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
@@ -183,7 +186,8 @@ NS.options.cfg = {
 					tooltip = function()
 						GameTooltip:SetText( "|TInterface\\ICONS\\inv_garrison_resource:16|t " .. L["Garrison Cache - Time Remaining"] );
 						for _,c in ipairs( NS.allCharacters.garrisonCache["characters"] ) do -- Adding all characters with a cache that are being monitored
-							GameTooltip:AddDoubleLine( c["name"], NS.SecondsToStrTime( c["fullSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
+							local cn = NS.db["hideCharacterRealms"] and strsplit( "-", c["name"], 2 ) or c["name"];
+							GameTooltip:AddDoubleLine( cn, NS.SecondsToStrTime( c["fullSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
 						end
 						if #NS.allCharacters.garrisonCache["characters"] == 0 then -- No characters with a cache being monitored
 							GameTooltip:AddLine( L["No characters being monitored"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
@@ -202,7 +206,8 @@ NS.options.cfg = {
 					size = { 170, 32 },
 					setPoint = { "TOPRIGHT", "$parentScrollFrame", "BOTTOMRIGHT", 31, -12 },
 					tooltip = function()
-						GameTooltip:SetText( NS.currentCharacter.name .. " - " .. L["Time Remaining"] );
+						local cn = NS.db["hideCharacterRealms"] and strsplit( "-", NS.currentCharacter.name, 2 ) or NS.currentCharacter.name;
+						GameTooltip:SetText( cn .. " - " .. L["Time Remaining"] );
 						for _,building in ipairs( NS.currentCharacter.buildings ) do -- Adding all buildings that are being monitored
 							GameTooltip:AddDoubleLine( "|T" .. NS.buildingInfo[building["name"]].icon .. ":16|t " .. NS.FactionBuildingName( NS.currentCharacter.faction, building["name"] ), NS.SecondsToStrTime( building["ordersOutSeconds"] ), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b );
 						end
@@ -227,7 +232,8 @@ NS.options.cfg = {
 					setPoint = { "RIGHT", "#sibling", "LEFT", -10, 0 },
 					normalTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-RACES",
 					tooltip = function()
-						GameTooltip:SetText( NS.currentCharacter.name .. " - " .. L["Ready for pickup"] );
+						local cn = NS.db["hideCharacterRealms"] and strsplit( "-", NS.currentCharacter.name, 2 ) or NS.currentCharacter.name;
+						GameTooltip:SetText( cn .. " - " .. L["Ready for pickup"] );
 						for _,building in ipairs( NS.currentCharacter.buildings ) do
 							GameTooltip:AddDoubleLine( "|T" .. NS.buildingInfo[building["name"]].icon .. ":16|t " .. NS.FactionBuildingName( NS.currentCharacter.faction, building["name"] ), building["ordersReady"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
 						end
@@ -292,7 +298,8 @@ NS.options.cfg = {
 						local t = {};
 						for ck,character in ipairs( NS.db["characters"] ) do
 							if character["gCacheSize"] > 0 then -- Exclude characters without a Garrison Cache
-								tinsert( t, { character["name"], ck } );
+								local cn = NS.db["hideCharacterRealms"] and strsplit( "-", character["name"], 2 ) or character["name"];
+								tinsert( t, { cn, ck } );
 							end
 						end
 						return t;
@@ -400,7 +407,7 @@ NS.options.cfg = {
 			mainFrameTitle	= NS.title,
 			tabText			= "Options",
 			Init			= function( SubFrame )
-				NS.TextFrame( "Alert", SubFrame, string.format( L["Alert - Time remaining will appear %sRED|r and the Minimap button blinks"], RED_FONT_COLOR_CODE ), {
+				NS.TextFrame( "Alert", SubFrame, string.format( L["Alert - Turns time remaining %sred|r and makes the Minimap button blink"], RED_FONT_COLOR_CODE ), {
 					size = { 500, 16 },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", 8, -8 },
 				} );
@@ -412,7 +419,7 @@ NS.options.cfg = {
 						{ L["Next Out/Full"], "next" },
 						{ L["All Out/Full"], "all" },
 					},
-					tooltip = string.format( L["%sDisabled:|r\nNo %sRED|r time remaining,\nMinimap button won't blink\n\n%sNext Out/Full:|r\nOne or more building\nor cache is out/full\n\n%sAll Out/Full:|r\nAll buildings or all\ncaches are out/full"], HIGHLIGHT_FONT_COLOR_CODE, RED_FONT_COLOR_CODE, HIGHLIGHT_FONT_COLOR_CODE, HIGHLIGHT_FONT_COLOR_CODE ),
+					tooltip = string.format( L["%sDisabled:|r\nNo %sred|r time remaining,\nMinimap button won't blink\n\n%sNext Out/Full:|r\nOne or more building\nor cache is out/full\n\n%sAll Out/Full:|r\nAll buildings or all\ncaches are out/full"], HIGHLIGHT_FONT_COLOR_CODE, RED_FONT_COLOR_CODE, HIGHLIGHT_FONT_COLOR_CODE, HIGHLIGHT_FONT_COLOR_CODE ),
 					OnClick = function()
 						NS.UpdateAll( "forceUpdate" );
 					end,
@@ -442,7 +449,7 @@ NS.options.cfg = {
 				} );
 				NS.CheckButton( "showMinimapButtonCheckButton", SubFrame, L["Show Minimap Button"], {
 					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 3, -1 },
-					tooltip = L["Show or hide the\nbutton on the Minimap."],
+					tooltip = L["Show or hide the\nbutton on the Minimap\n\n(Character Specific)"],
 					OnClick = function( checked )
 						NS.UpdateAll( "forceUpdate" );
 						if not checked then
@@ -453,12 +460,18 @@ NS.options.cfg = {
 					end,
 					dbpc = "showMinimapButton",
 				} );
+				NS.CheckButton( "hideCharacterRealmsCheckButton", SubFrame, L["Hide Character Realms"], {
+					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -1 },
+					tooltip = L["Removes realm after name"],
+					db = "hideCharacterRealms",
+				} );
 			end,
 			Refresh			= function( SubFrame )
 				local sfn = SubFrame:GetName();
 				_G[sfn .. "AlertTypeDropDownMenu"]:Reset( NS.db["alertType"] );
 				_G[sfn .. "AlertSecondsDropDownMenu"]:Reset( NS.db["alertSeconds"] );
 				_G[sfn .. "showMinimapButtonCheckButton"]:SetChecked( NS.dbpc["showMinimapButton"] );
+				_G[sfn .. "hideCharacterRealmsCheckButton"]:SetChecked( NS.db["hideCharacterRealms"] );
 			end,
 		},
 		{
