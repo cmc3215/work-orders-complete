@@ -1,6 +1,6 @@
 **1.4**
 * Release date: 06/13/2015
-* Bug fix, rebuilding a previously owned building that also had more than 1 Work Order in progress caused "Ready" to be negative
+* Bug fix, rebuilding a previously owned building that also had more than 1 Work Order in progress could sometimes cause "Ready" to be negative
 
 **1.3**
 * Release date: 06/13/2015
