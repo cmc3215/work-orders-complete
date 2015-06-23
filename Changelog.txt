@@ -1,3 +1,10 @@
+**1.5**
+* Release date: 06/23/2015
+* TOC updated for patch 6.2
+* Frame strata now the more appropriate MEDIUM instead of HIGH
+* Monitor tab visually cleaned up a bit, WOC frame size reduced slightly
+
+
 **1.4**
 * Release date: 06/13/2015
 * Bug fix, rebuilding a previously owned building that also had more than 1 Work Order in progress could sometimes cause "Ready" to be negative

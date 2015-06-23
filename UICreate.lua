@@ -2,12 +2,12 @@
 -- INIT
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
-local cfg = NS.options.cfg;
+local cfg = NS.UI.cfg;
 local MainFrame, SubFrameHeader, SubFrameTabs, SubFrames = nil, nil, {}, {};
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- MAINFRAME
 --------------------------------------------------------------------------------------------------------------------------------------------
-MainFrame = NS.Frame( NS.addon .. "OptionsMainFrame", UIParent, {
+MainFrame = NS.Frame( NS.addon .. "UIMainFrame", UIParent, {
 	topLevel = true,
 	template = "ButtonFrameTemplate",
 	hidden = true,
@@ -24,7 +24,7 @@ MainFrame = NS.Frame( NS.addon .. "OptionsMainFrame", UIParent, {
 	end,
 	OnEvent = function( self, event )
 		if event == "PLAYER_LOGIN" then
-			self:UnregisterEvent( "PLAYER_LOGIN" );
+			self:UnregisterEvent( event );
 			self:SetScript( "OnEvent", nil );
 			cfg.mainFrame.Init( self ); -- Init MainFrame
 			tinsert( UISpecialFrames, self:GetName() );
@@ -34,17 +34,28 @@ MainFrame = NS.Frame( NS.addon .. "OptionsMainFrame", UIParent, {
 		end
 	end,
 	OnLoad = function( self )
+		-- Hide Portrait
 		if not cfg.mainFrame.portrait then
 			ButtonFrameTemplate_HidePortrait( self );
 		end
+		-- Hide Button Bar
 		if not cfg.mainFrame.buttonBar then
 			ButtonFrameTemplate_HideButtonBar( self );
 		end
+		-- Inset
 		self.Inset:SetPoint( "TOPLEFT", 4, -50 );
+		-- Register to run inits
 		self:RegisterEvent( "PLAYER_LOGIN" );
+		-- ShowTab()
 		function self:ShowTab( index )
 			self:Show();
 			SubFrameTabs[index or 1]:Click();
+		end
+		-- ? Reposition()
+		if cfg.mainFrame.Reposition then
+			function self:Reposition()
+				cfg.mainFrame.Reposition( self );
+			end
 		end
 	end,
 } );
@@ -94,7 +105,7 @@ local CreateSubFrame = function( index )
 		hidden = true,
 		setPoint = {
 			{ "TOPLEFT", 10, -55 },
-			{ "BOTTOMRIGHT", -10, 30 },
+			{ "BOTTOMRIGHT", -10, ( cfg.mainFrame.buttonBar and 30 or 6 ) },
 		},
 		OnShow = function( self )
 			self:Refresh();
@@ -114,7 +125,7 @@ end
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- ADD TO NAMESPACE
 --------------------------------------------------------------------------------------------------------------------------------------------
-NS.options.MainFrame = MainFrame;
---NS.options.SubFrameHeader = SubFrameHeader;
---NS.options.SubFrameTabs = SubFrameTabs;
-NS.options.SubFrames = SubFrames;
+NS.UI.MainFrame = MainFrame;
+--NS.UI.SubFrameHeader = SubFrameHeader;
+--NS.UI.SubFrameTabs = SubFrameTabs;
+NS.UI.SubFrames = SubFrames;
