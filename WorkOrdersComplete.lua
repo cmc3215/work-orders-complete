@@ -301,7 +301,7 @@ NS.UpdateCharacter = function()
 		local buildingID,buildingName,_,_,_,rank,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isBeingBuilt,_,_,_,_ = C_Garrison.GetOwnedBuildingInfo( building.plotID );
 		local _,_,shipmentCapacity,shipmentsReady,shipmentsTotal,_,duration,timeleftString,_,_,_,_ = C_Garrison.GetLandingPageShipmentInfo( buildingID );
 		buildingName = NS.BuildingName( buildingName ); -- Resolves shared names
-		if shipmentCapacity then -- Only store buildings with Work Orders
+		if shipmentCapacity and shipmentCapacity > 1 then -- Only store buildings with Work Orders
 			table.insert( NS.db["characters"][k]["buildings"], {
 				["id"] = buildingID,											-- 145, etc.
 				["name"] = buildingName,										-- Trading Post, etc.
