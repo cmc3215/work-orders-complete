@@ -4,12 +4,7 @@
 local NS = select( 2, ... );
 local L = NS.localization;
 --
-NS.addon = ...;
-NS.title = GetAddOnMetadata( NS.addon, "Title" );
-NS.stringVersion = GetAddOnMetadata( NS.addon, "Version" );
-NS.version = tonumber( NS.stringVersion );
 NS.initialized = false;
-NS.options = {};
 --
 NS.lastTimeShipmentRequest = nil;
 NS.lastTimeShipmentRequestSent = nil;
@@ -112,12 +107,6 @@ NS.buildingInfo = {
 	--["Fishing Shack"]
 };
 --------------------------------------------------------------------------------------------------------------------------------------------
--- Utility Functions
---------------------------------------------------------------------------------------------------------------------------------------------
-NS.Print = function( msg )
-	print( ORANGE_FONT_COLOR_CODE .. "<|r" .. NORMAL_FONT_COLOR_CODE .. NS.addon .. "|r" .. ORANGE_FONT_COLOR_CODE .. ">|r " .. msg );
-end
---------------------------------------------------------------------------------------------------------------------------------------------
 -- SavedVariables(PerCharacter)
 --------------------------------------------------------------------------------------------------------------------------------------------
 NS.DefaultSavedVariables = function()
@@ -165,7 +154,7 @@ end
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- Misc
 --------------------------------------------------------------------------------------------------------------------------------------------
-NS.SecondsToStrTime = function( seconds, noColor )
+NS.SecondsToStrTime = function( seconds ) -- REDEFINED FOR COLORING
 	local originalSeconds = seconds;
 	-- Seconds In Min, Hour, Day
     local secondsInAMinute = 60;
@@ -184,30 +173,8 @@ NS.SecondsToStrTime = function( seconds, noColor )
     local seconds = math.ceil( remainingSeconds );
 	--
 	local strTime = ( days > 0 and hours == 0 and days .. " day" ) or ( days > 0 and days .. " day " .. hours .. " hr" ) or ( hours > 0 and minutes == 0 and hours .. " hr" ) or ( hours > 0 and hours .. " hr " .. minutes .. " min" ) or ( minutes > 0 and minutes .. " min" ) or seconds .. " sec";
-	return ( originalSeconds < NS.db["alertSeconds"] and NS.db["alertType"] ~= "disabled" and not noColor ) and RED_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE or ( not noColor and GREEN_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE ) or strTime;
-end
-
---
-NS.StrTimeToSeconds = function( str )
-	if not str then return 0; end
-	local t1, i1, t2, i2 = strsplit( " ", str ); -- x day   -   x day x hr   -   x hr y min   -   x hr   -   x min   -   x sec
-	local M = function( i )
-		if i == "hr" then
-			return 3600;
-		elseif i == "min" then
-			return 60;
-		elseif i == "sec" then
-			return 1;
-		else -- i == "day" then
-			-- Upon constuction complete, NOT activation, of a previously owned building with Work Orders that were in progress are lumped together as one.
-			-- This means, that if there were 2 Work Orders in progress, the time might be 8 hr, but if it were 20 Work Orders, it would be days.
-			--
-			-- As if that wasn't odd enough, "day" is encoded and has a length of 11 instead of 3, which is converted to "days" when passed to a function.
-			-- So, until I figure out a more elegant solution, if no match is found, then it must be the encoded word "day".
-			return 86400;
-		end
-	end
-	return t1 * M( i1 ) + ( t2 and t2 * M( i2 ) or 0 );
+	-- COLORING - RED/GREEN
+	return ( originalSeconds < NS.db["alertSeconds"] and NS.db["alertType"] ~= "disabled" ) and RED_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE or GREEN_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE;
 end
 
 --
@@ -245,17 +212,6 @@ NS.FactionBuildingName = function( faction, name )
 end
 
 --
-NS.FindKeyByName = function( t, name )
-	if not name then return nil end
-	for k, v in ipairs( t ) do
-		if v["name"] == name then
-			return k;
-		end
-	end
-	return nil;
-end
-
---
 NS.OrdersReady = function( ordersReady, ordersTotal, ordersDuration, ordersNextSeconds, lastTimeUpdated )
 	-- Calculate how many orders could have completed in the time past, which could not be larger than the
 	-- amount of orders in progress ( i.e. total - ready ), then we just add the orders that were already ready
@@ -287,15 +243,6 @@ NS.GCacheFullSeconds = function( gCacheSize, gCacheLastTimeLooted )
 	local gCacheSecondsRemaining = ( 600 * gCacheSize ) - ( time() - gCacheLastTimeLooted ); -- Seconds left to fill cache, may be negative is already full (1 GR is created every 10 min or 600)
 	return gCacheSecondsRemaining >= 0 and gCacheSecondsRemaining or 0; -- Zero if 0 or negative
 end
---
-NS.Sort = function( t, k )
-	table.sort ( t,
-		function ( e1, e2 )
-			return e1[k] < e2[k];
-		end
-	);
-end
-
 --
 NS.ToggleAlert = function()
 	if	NS.dbpc["showMinimapButton"] and (
@@ -474,14 +421,14 @@ NS.UpdateBuildings = function()
 	-- Sort and save to namespace
 	-- All Characters
 	for k = 1, #buildings do
-		NS.Sort( buildings[k]["characters"], "ordersOutSeconds" ); -- Sort characters of each building
+		NS.Sort( buildings[k]["characters"], "ordersOutSeconds", "ASC" ); -- Sort characters of each building
 	end
-	NS.Sort( buildings, "ordersNextOutSeconds" ); -- Sort buildings
+	NS.Sort( buildings, "ordersNextOutSeconds", "ASC" ); -- Sort buildings
 	NS.allCharacters.buildings = buildings;
 	NS.allCharacters.nextOutFullSeconds.buildings = nextOutFullSeconds.buildings;
 	NS.allCharacters.allOutFullSeconds.buildings = allOutFullSeconds.buildings;
 	-- Current Character
-	NS.Sort( currentCharacter.buildings, "ordersOutSeconds" ); -- Sort current character's buildings
+	NS.Sort( currentCharacter.buildings, "ordersOutSeconds", "ASC" ); -- Sort current character's buildings
 	NS.currentCharacter.buildings = currentCharacter.buildings;
 	NS.currentCharacter.nextOutFullSeconds.buildings = #currentCharacter.buildings > 0 and currentCharacter.buildings[1]["ordersOutSeconds"] or nil;
 	NS.currentCharacter.allOutFullSeconds.buildings = #currentCharacter.buildings > 0 and currentCharacter.buildings[#currentCharacter.buildings]["ordersOutSeconds"] or nil;
@@ -525,7 +472,7 @@ NS.UpdateGarrisonCache = function()
 	end
 	-- Sort and save to namespace
 	-- All Characters
-	NS.Sort( garrisonCache["characters"], "fullSeconds" );
+	NS.Sort( garrisonCache["characters"], "fullSeconds", "ASC" );
 	NS.allCharacters.garrisonCache = garrisonCache;
 	NS.allCharacters.nextOutFullSeconds.garrisonCache = nextOutFullSeconds.garrisonCache;
 	NS.allCharacters.allOutFullSeconds.garrisonCache = allOutFullSeconds.garrisonCache;
@@ -572,7 +519,7 @@ end
 NS.MinimapButton( "WOCMinimapButton", "Interface\\ICONS\\inv_letter_03", {
 	dbpc = "minimapButtonPosition",
 	tooltip = function()
-		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE .. " v" .. NS.stringVersion );
+		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE .. " v" .. NS.versionString );
 		GameTooltip:AddLine( L["Left-Click to open and close"] );
 		GameTooltip:AddLine( L["Drag to move this button"] );
 		GameTooltip:Show();
@@ -587,18 +534,18 @@ NS.MinimapButton( "WOCMinimapButton", "Interface\\ICONS\\inv_letter_03", {
 NS.SlashCmdHandler = function( cmd )
 	if not NS.initialized then return end
 	--
-	if NS.options.MainFrame:IsShown() then
-		NS.options.MainFrame:Hide();
+	if NS.UI.MainFrame:IsShown() then
+		NS.UI.MainFrame:Hide();
 	elseif not cmd or cmd == "" or cmd == "monitor" then
-		NS.options.MainFrame:ShowTab( 1 );
+		NS.UI.MainFrame:ShowTab( 1 );
 	elseif cmd == "characters" then
-		NS.options.MainFrame:ShowTab( 2 );
+		NS.UI.MainFrame:ShowTab( 2 );
 	elseif cmd == "options" then
-		NS.options.MainFrame:ShowTab( 3 );
+		NS.UI.MainFrame:ShowTab( 3 );
 	elseif cmd == "help" then
-		NS.options.MainFrame:ShowTab( 4 );
+		NS.UI.MainFrame:ShowTab( 4 );
 	else
-		NS.options.MainFrame:ShowTab( 4 );
+		NS.UI.MainFrame:ShowTab( 4 );
 		NS.Print( L["Unknown command, opening Help"] );
 	end
 end
@@ -689,10 +636,10 @@ end
 NS.Frame( "WOCEventsFrame", UIParent, {
 	topLevel = true,
 	OnEvent = function ( self, event, ... )
-		if		event == "GARRISON_LANDINGPAGE_SHIPMENTS"	then		NS.ShipmentInfoUpdated( event );
-		elseif	event == "GARRISON_SHIPMENT_RECEIVED"		then		NS.ShipmentRequestHandler( event );
-		elseif	event == "ADDON_LOADED"						then		NS.OnAddonLoaded( event );
-		elseif	event == "PLAYER_LOGIN"						then		NS.OnPlayerLogin( event );
+		if		event == "GARRISON_LANDINGPAGE_SHIPMENTS"	then	NS.ShipmentInfoUpdated( event );
+		elseif	event == "GARRISON_SHIPMENT_RECEIVED"		then	NS.ShipmentRequestHandler( event );
+		elseif	event == "ADDON_LOADED"						then	NS.OnAddonLoaded( event );
+		elseif	event == "PLAYER_LOGIN"						then	NS.OnPlayerLogin( event );
 		end
 	end,
 	OnLoad = function( self )

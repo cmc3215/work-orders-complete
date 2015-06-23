@@ -2,6 +2,11 @@
 -- INIT
 --------------------------------------------------------------------------------------------------------------------------------------------
 local NS = select( 2, ... );
+NS.addon = ...;
+NS.title = GetAddOnMetadata( NS.addon, "Title" );
+NS.versionString = GetAddOnMetadata( NS.addon, "Version" );
+NS.version = tonumber( NS.versionString );
+NS.UI = {};
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- FRAME CREATION
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -277,7 +282,11 @@ NS.Frame = function( name, parent, set )
 		f:SetFrameStrata( set.frameStrata );
 	end
 	if set.frameLevel then
-		f:SetFrameLevel( set.frameLevel );
+		if set.frameLevel == "TOP" then
+			f:SetToplevel( true );
+		else
+			f:SetFrameLevel( set.frameLevel );
+		end
 	end
 	if set.setAllPoints then
 		f:SetAllPoints();
@@ -439,21 +448,6 @@ NS.Explode = function( sep, str )
 end
 
 --
-NS.TimeDelayFunction = function( delaySeconds, delayFunction )
-	local totalDelay = 0;
-	local function CheckDelay( self, elapsed )
-		totalDelay = totalDelay + elapsed;
-		if totalDelay >= delaySeconds then
-			self:SetScript( "OnUpdate", nil );
-			self:SetParent( nil );
-			delayFunction();
-		end
-	end
-	local f = CreateFrame( "FRAME" );
-	f:SetScript( "OnUpdate", CheckDelay );
-end
-
---
 NS.TruncatedText_OnEnter = function( self )
 	local fs = _G[self:GetName() .. "Text"];
 	if fs:IsTruncated() then
@@ -471,4 +465,97 @@ NS.Count = function( t )
 	return count;
 end
 
+--
+NS.Print = function( msg )
+	print( ORANGE_FONT_COLOR_CODE .. "<|r" .. NORMAL_FONT_COLOR_CODE .. NS.addon .. "|r" .. ORANGE_FONT_COLOR_CODE .. ">|r " .. msg );
+end
+
+--
+NS.Print_t = function( t )
+	for k, v in pairs( t ) do
+		if type( v ) == "table" then
+			print( k .. "=TABLE:" );
+			NS.Print_t( v );
+		elseif type( v ) == "string" or type( v ) == "number" then
+			print( k .. "=" .. v );
+		elseif type( v ) == "boolean" then
+			print( k .. "=" .. ( v and "true" or "false" ) );
+		end
+	end
+end
+
+--
+NS.SecondsToStrTime = function( seconds )
+	local originalSeconds = seconds;
+	-- Seconds In Min, Hour, Day
+    local secondsInAMinute = 60;
+    local secondsInAnHour  = 60 * secondsInAMinute;
+    local secondsInADay    = 24 * secondsInAnHour;
+    -- Days
+    local days = math.floor( seconds / secondsInADay );
+    -- Hours
+    local hourSeconds = seconds % secondsInADay;
+    local hours = math.floor( hourSeconds / secondsInAnHour );
+    -- Minutes
+    local minuteSeconds = hourSeconds % secondsInAnHour;
+    local minutes = floor( minuteSeconds / secondsInAMinute );
+    -- Seconds
+    local remainingSeconds = minuteSeconds % secondsInAMinute;
+    local seconds = math.ceil( remainingSeconds );
+	--
+	return ( days > 0 and hours == 0 and days .. " day" ) or ( days > 0 and days .. " day " .. hours .. " hr" ) or ( hours > 0 and minutes == 0 and hours .. " hr" ) or ( hours > 0 and hours .. " hr " .. minutes .. " min" ) or ( minutes > 0 and minutes .. " min" ) or seconds .. " sec";
+end
+
+--
+NS.StrTimeToSeconds = function( str )
+	if not str then return 0; end
+	local t1, i1, t2, i2 = strsplit( " ", str ); -- x day   -   x day x hr   -   x hr y min   -   x hr   -   x min   -   x sec
+	local M = function( i )
+		if i == "hr" then
+			return 3600;
+		elseif i == "min" then
+			return 60;
+		elseif i == "sec" then
+			return 1;
+		else
+			return 86400; -- day
+		end
+	end
+	return t1 * M( i1 ) + ( t2 and t2 * M( i2 ) or 0 );
+end
+
+--
+NS.FindKeyByName = function( t, name )
+	if not name then return nil end
+	for k, v in ipairs( t ) do
+		if v["name"] == name then
+			return k;
+		end
+	end
+	return nil;
+end
+
+--
+NS.FindKeyByField = function( t, f, fv )
+	if not fv then return nil end
+	for k, v in ipairs( t ) do
+		if v[f] == fv then
+			return k;
+		end
+	end
+	return nil;
+end
+
+--
+NS.Sort = function( t, k, order )
+	table.sort ( t,
+		function ( e1, e2 )
+			if order == "ASC" then
+				return e1[k] < e2[k];
+			elseif order == "DESC" then
+				return e1[k] > e2[k];
+			end
+		end
+	);
+end
 

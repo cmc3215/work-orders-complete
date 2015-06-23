@@ -6,20 +6,23 @@ local L = NS.localization;
 --------------------------------------------------------------------------------------------------------------------------------------------
 -- CONFIG
 --------------------------------------------------------------------------------------------------------------------------------------------
-NS.options.cfg = {
+NS.UI.cfg = {
 	--
 	mainFrame = {
-		width		= 585,
-		height		= 403,
-		frameStrata	= "HIGH",
-		frameLevel	= 2,
+		width		= 567,
+		height		= 394,
+		frameStrata	= "MEDIUM",
+		frameLevel	= "TOP",
 		Init		= function( MainFrame ) end,
 		OnShow		= function( MainFrame )
-			MainFrame:ClearAllPoints();
-			MainFrame:SetPoint( "CENTER", 0, 0 );
+			MainFrame:Reposition();
 		end,
 		OnHide		= function( MainFrame )
 			StaticPopup_Hide( "WOC_CHARACTER_DELETE" );
+		end,
+		Reposition = function( MainFrame )
+			MainFrame:ClearAllPoints();
+			MainFrame:SetPoint( "CENTER", 0, 0 );
 		end,
 	},
 	--
@@ -32,7 +35,7 @@ NS.options.cfg = {
 				NS.Button( "IconColumnHeaderButton", SubFrame, "B", {
 					template = "WOCColumnHeaderButtonTemplate",
 					size = { 30, 19 },
-					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", 7, -8 },
+					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", -2, 0 },
 				} );
 				NS.Button( "ReadyColumnHeaderButton", SubFrame, "" .. L["Ready"], {
 					template = "WOCColumnHeaderButtonTemplate",
@@ -66,7 +69,7 @@ NS.options.cfg = {
 				} );
 				NS.Button( "RefreshButton", SubFrame, L["Refresh"], {
 					size = { 96, 20 },
-					setPoint = { "BOTTOMRIGHT", "#sibling", "TOPRIGHT", 2, 15 },
+					setPoint = { "BOTTOMRIGHT", "#sibling", "TOPRIGHT", 2, 7 },
 					fontObject = "GameFontNormalSmall",
 					OnClick = function()
 						SubFrame:Refresh();
@@ -163,7 +166,7 @@ NS.options.cfg = {
 				NS.Button( "GarrisonCache", SubFrame, nil, {
 					template = false,
 					size = { 32, 32 },
-					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", 0, -12 },
+					setPoint = { "TOPLEFT", "#sibling", "BOTTOMLEFT", ( 547 - ( 424 + 10 ) + 1 ) / 2, -12 },
 					normalTexture = "Interface\\ICONS\\inv_garrison_resource",
 					tooltip = function()
 						GameTooltip:SetText( "|TInterface\\ICONS\\inv_garrison_resource:16|t " .. L["Garrison Cache - Ready for pickup"] );
@@ -201,10 +204,32 @@ NS.options.cfg = {
 						fs:SetJustifyH( "LEFT" );
 					end,
 				} );
+				NS.Button( "CurrentCharacter", SubFrame, nil, {
+					template = false,
+					size = { 32, 32 },
+					setPoint = { "LEFT", "#sibling", "RIGHT", 10, 0 },
+					normalTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-RACES",
+					tooltip = function()
+						local cn = NS.db["showCharacterRealms"] and NS.currentCharacter.name or strsplit( "-", NS.currentCharacter.name, 2 );
+						GameTooltip:SetText( cn .. " - " .. L["Ready for pickup"] );
+						for _,building in ipairs( NS.currentCharacter.buildings ) do
+							GameTooltip:AddDoubleLine( "|T" .. NS.buildingInfo[building["name"]].icon .. ":16|t " .. NS.FactionBuildingName( NS.currentCharacter.faction, building["name"] ), building["ordersReady"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
+						end
+						if NS.currentCharacter.garrisonCache["gCache"] then -- Character has a cache and it's being monitored
+							GameTooltip:AddDoubleLine( "|TInterface\\ICONS\\inv_garrison_resource:16|t " .. L["Garrison Cache"], NS.currentCharacter.garrisonCache["gCache"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
+						end
+						if #NS.currentCharacter.buildings == 0 and not NS.currentCharacter.garrisonCache["gCache"] then -- Nothing being monitored
+							GameTooltip:AddLine( L["Nothing being monitored"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
+						end
+					end,
+					OnLoad = function( self )
+						self.tooltipAnchor = { self, "ANCHOR_RIGHT" };
+					end,
+				} );
 				NS.Button( "CurrentCharacterNextAll", SubFrame, nil, {
 					template = false,
 					size = { 170, 32 },
-					setPoint = { "TOPRIGHT", "$parentScrollFrame", "BOTTOMRIGHT", 31, -12 },
+					setPoint = { "LEFT", "#sibling", "RIGHT", 10, 0 },
 					tooltip = function()
 						local cn = NS.db["showCharacterRealms"] and NS.currentCharacter.name or strsplit( "-", NS.currentCharacter.name, 2 );
 						GameTooltip:SetText( cn .. " - " .. L["Time Remaining"] );
@@ -224,28 +249,6 @@ NS.options.cfg = {
 						fs:SetAllPoints();
 						fs:SetFontObject( "GameFontNormal" );
 						fs:SetJustifyH( "LEFT" );
-					end,
-				} );
-				NS.Button( "CurrentCharacter", SubFrame, nil, {
-					template = false,
-					size = { 32, 32 },
-					setPoint = { "RIGHT", "#sibling", "LEFT", -10, 0 },
-					normalTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-RACES",
-					tooltip = function()
-						local cn = NS.db["showCharacterRealms"] and NS.currentCharacter.name or strsplit( "-", NS.currentCharacter.name, 2 );
-						GameTooltip:SetText( cn .. " - " .. L["Ready for pickup"] );
-						for _,building in ipairs( NS.currentCharacter.buildings ) do
-							GameTooltip:AddDoubleLine( "|T" .. NS.buildingInfo[building["name"]].icon .. ":16|t " .. NS.FactionBuildingName( NS.currentCharacter.faction, building["name"] ), building["ordersReady"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
-						end
-						if NS.currentCharacter.garrisonCache["gCache"] then -- Character has a cache and it's being monitored
-							GameTooltip:AddDoubleLine( "|TInterface\\ICONS\\inv_garrison_resource:16|t " .. L["Garrison Cache"], NS.currentCharacter.garrisonCache["gCache"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, BATTLENET_FONT_COLOR.r, BATTLENET_FONT_COLOR.g, BATTLENET_FONT_COLOR.b );
-						end
-						if #NS.currentCharacter.buildings == 0 and not NS.currentCharacter.garrisonCache["gCache"] then -- Nothing being monitored
-							GameTooltip:AddLine( L["Nothing being monitored"], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b );
-						end
-					end,
-					OnLoad = function( self )
-						self.tooltipAnchor = { self, "ANCHOR_RIGHT" };
 					end,
 				} );
 			end,
@@ -330,7 +333,7 @@ NS.options.cfg = {
 				} );
 				NS.Button( "DeleteCharacterButton", SubFrame, L["Delete Character"], {
 					size = { 126, 22 },
-					setPoint = { "BOTTOMRIGHT", "$parent", "BOTTOMRIGHT", -8, -14 },
+					setPoint = { "BOTTOMRIGHT", "$parent", "BOTTOMRIGHT", -8, 8 },
 					OnClick = function()
 						StaticPopup_Show( "WOC_CHARACTER_DELETE", NS.db["characters"][NS.selectedCharacterKey]["name"], nil, { ["ck"] = NS.selectedCharacterKey, ["name"] = NS.db["characters"][NS.selectedCharacterKey]["name"] } );
 					end,
@@ -379,7 +382,7 @@ NS.options.cfg = {
 					-- Print a message, go to Help tab, and stop right here
 					if not NS.selectedCharacterKey then
 						NS.Print( L["No characters found with at least a Garrison Cache"] );
-						NS.options.MainFrame:ShowTab( 4 );
+						NS.UI.MainFrame:ShowTab( 4 );
 						return; -- Stop function
 					end
 				end
@@ -479,7 +482,7 @@ NS.options.cfg = {
 			mainFrameTitle	= NS.title,
 			tabText			= "Help",
 			Init			= function( SubFrame )
-				NS.TextFrame( "Description", SubFrame, string.format( L["%s version %s"], NS.title, NS.stringVersion ), {
+				NS.TextFrame( "Description", SubFrame, string.format( L["%s version %s"], NS.title, NS.versionString ), {
 					setPoint = {
 						{ "TOPLEFT", "$parent", "TOPLEFT", 8, -8 },
 						{ "RIGHT", -8 },
