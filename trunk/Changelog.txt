@@ -1,3 +1,7 @@
+**1.7**
+* Release date: 06/23/2015
+* Bug fix, later Shipyard ranks will cause Lua errors
+
 **1.6**
 * Release date: 06/23/2015
 * Bug fix, after Shipyard create, LUA error
