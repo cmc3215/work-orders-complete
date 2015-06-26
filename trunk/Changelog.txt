@@ -1,3 +1,7 @@
+**1.8**
+* Release date: 06/25/2015
+* Now supports Garrison Cache size up to 1000 via the new item in patch 6.2 - "Trade Agreement: Arakkoa Outcasts" @ http://www.wowhead.com/item=128294/trade-agreement-arakkoa-outcasts
+
 **1.7**
 * Release date: 06/23/2015
 * Bug fix, later Shipyard ranks will cause Lua errors
