@@ -10,6 +10,7 @@ NS.lastTimeShipmentRequest = nil;
 NS.lastTimeShipmentRequestSent = nil;
 NS.lastTimeUpdateAll = nil;
 
+NS.minimapButtonFlash = nil;
 NS.alertFlashing = false;
 NS.selectedCharacterKey = nil;
 --
@@ -245,6 +246,19 @@ NS.GCacheFullSeconds = function( gCacheSize, gCacheLastTimeLooted )
 end
 --
 NS.ToggleAlert = function()
+	if not NS.minimapButtonFlash then
+		NS.minimapButtonFlash = WOCMinimapButton:CreateAnimationGroup();
+		NS.minimapButtonFlash:SetLooping( "REPEAT" );
+		local a1 = NS.minimapButtonFlash:CreateAnimation( "Alpha" );
+		a1:SetDuration( 0.5 );
+		a1:SetChange( -1 );
+		a1:SetOrder( 1 );
+		local a2 = NS.minimapButtonFlash:CreateAnimation( "Alpha" );
+		a2:SetDuration( 0.5 );
+		a2:SetChange( 1 );
+		a2:SetOrder( 2 );
+	end
+	--
 	if	NS.dbpc["showMinimapButton"] and (
 			-- Next Out / Full (All Characters ONLY)
 			( NS.db["alertType"] == "next" and (
@@ -259,13 +273,12 @@ NS.ToggleAlert = function()
 		) then
 		if not NS.alertFlashing then
 			NS.alertFlashing = true;
-			UIFrameFlash( WOCMinimapButton, 0.5, 0.5, ( 24 * 3600 ), true, 0, 0 ); -- frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime
+			NS.minimapButtonFlash:Play();
 		end
 	else
 		if NS.alertFlashing then
 			NS.alertFlashing = false;
-			UIFrameFlashStop( WOCMinimapButton );
-			WOCMinimapButton:SetAlpha( 1.0 );
+			NS.minimapButtonFlash:Stop();
 		end
 	end
 end

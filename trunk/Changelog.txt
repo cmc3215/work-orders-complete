@@ -1,3 +1,7 @@
+**1.9**
+* Release date: 07/16/2015
+* Bug fix, minimap flashing during combat was causing taint resulting in a Blizzard block message when trying to use some default UI frames such as Glyphs or Talents
+
 **1.8**
 * Release date: 06/25/2015
 * Now supports Garrison Cache size up to 1000 via the new item in patch 6.2 - "Trade Agreement: Arakkoa Outcasts" @ http://www.wowhead.com/item=128294/trade-agreement-arakkoa-outcasts
