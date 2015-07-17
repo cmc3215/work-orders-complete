@@ -1,6 +1,6 @@
 **1.9**
 * Release date: 07/16/2015
-* Bug fix, minimap flashing during combat was causing taint resulting in a Blizzard block message when trying to use some default UI frames such as Glyphs or Talents
+* Bug fix, minimap button flashing during combat was causing taint resulting in a Blizzard block message when trying to use some default UI frames such as Glyphs or Talents
 
 **1.8**
 * Release date: 06/25/2015
