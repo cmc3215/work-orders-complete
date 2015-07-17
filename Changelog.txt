@@ -1,3 +1,7 @@
+**2.0**
+* Release date: 07/17/2015
+* Added detection for Garrison Cache size of 750, all three sizes 500, 750, and 1000 are now supported
+
 **1.9**
 * Release date: 07/16/2015
 * Bug fix, minimap button flashing during combat was causing taint resulting in a Blizzard block message when trying to use some default UI frames such as Glyphs or Talents

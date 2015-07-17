@@ -305,8 +305,8 @@ NS.UpdateCharacter = function()
 	-- Update Faction - Pandaren start neutral and some players will pay for a faction change, the first update after choosing or changing factions will correct their faction
 	NS.currentCharacter.faction = UnitFactionGroup( "player" );
 	NS.db["characters"][k]["faction"] = NS.currentCharacter.faction;
-	-- Update gCacheSize - Quests may be completed later, in patch 6.2 cache is upgradeable to 1000 from 500 via an item that flags quest 37485 as complete
-	NS.db["characters"][k]["gCacheSize"] = IsQuestFlaggedCompleted( 37485 ) and 1000 or ( ( IsQuestFlaggedCompleted( 35176 ) or IsQuestFlaggedCompleted( 34824 ) ) and 500 ) or 0; -- Faction quests complete for use of Garrison Cache?
+	-- Update gCacheSize - Players may increase their Garrison Cache size from the base 500 to 750 (Quest-The Assault Base) and 1000 (Item-Trade Agreement: Arakkoa Outcasts)
+	NS.db["characters"][k]["gCacheSize"] = ( IsQuestFlaggedCompleted( 37485 ) and 1000 ) or ( ( IsQuestFlaggedCompleted( 38445 ) or IsQuestFlaggedCompleted( 37935 ) ) and 750 ) or ( ( IsQuestFlaggedCompleted( 35176 ) or IsQuestFlaggedCompleted( 34824 ) ) and 500 ) or 0; -- Faction quests completed for Garrison Cache?
 	-- Buildings
 	NS.db["characters"][k]["buildings"] = {}; -- Out with the old, new awaits us below
 	--
