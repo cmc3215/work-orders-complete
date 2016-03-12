@@ -1,3 +1,7 @@
+**2.1**
+* Release date: 03/12/2016
+* Fixed a few text labels and a dropdown that were being truncated when using WoW's Fullscreen as opposed to Windowed mode.
+
 **2.0**
 * Release date: 07/17/2015
 * Added detection for Garrison Cache size of 750, all three sizes 500, 750, and 1000 are now supported
