@@ -292,7 +292,7 @@ NS.UI.cfg = {
 			tabText			= "Characters",
 			Init			= function( SubFrame )
 				NS.TextFrame( "Character", SubFrame, L["Character:"], {
-					size = { 60, 16 },
+					size = { 64, 16 },
 					setPoint = { "TOPLEFT", "$parent", "TOPLEFT", 8, -8 },
 				} );
 				NS.DropDownMenu( "CharacterDropDownMenu", SubFrame, {
@@ -426,7 +426,7 @@ NS.UI.cfg = {
 					OnClick = function()
 						NS.UpdateAll( "forceUpdate" );
 					end,
-					width = 90,
+					width = 94,
 				} );
 				NS.DropDownMenu( "AlertSecondsDropDownMenu", SubFrame, {
 					db = "alertSeconds",
@@ -444,7 +444,7 @@ NS.UI.cfg = {
 					OnClick = function()
 						NS.UpdateAll( "forceUpdate" );
 					end,
-					width = 90,
+					width = 94,
 				} );
 				NS.TextFrame( "MiscLabel", SubFrame, L["Miscellaneous"], {
 					size = { 100, 16 },
