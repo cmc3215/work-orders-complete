@@ -9,7 +9,7 @@ NS.initialized = false;
 NS.lastTimeShipmentRequest = nil;
 NS.lastTimeShipmentRequestSent = nil;
 NS.lastTimeUpdateAll = nil;
-
+--
 NS.minimapButtonFlash = nil;
 NS.alertFlashing = false;
 NS.selectedCharacterKey = nil;
@@ -68,13 +68,14 @@ NS.currentCharacter.TexCoords = function()
 	return left, right, top, bottom;
 end
 --
+NS.garrisonType = LE_GARRISON_TYPE_6_0;
 NS.buildingInfo = {
 	--
 	-- Small - 4
 	--
 	["Gem Boutique"] = { icon = "Interface\\ICONS\\inv_misc_gem_01", type = 4 },
-	["Salvage Yard"] = { icon = "Interface\\ICONS\\garrison_building_salvageyard", type = 4 },
-	["Storehouse"] = { icon = "Interface\\ICONS\\garrison_building_storehouse", type = 4 },
+	--["Salvage Yard"]
+	--["Storehouse"]
 	["Alchemy Lab"] = { icon = "Interface\\ICONS\\trade_alchemy", type = 4 },
 	["Enchanter's Study"] = { icon = "Interface\\ICONS\\trade_engraving", type = 4 },
 	["Engineering Works"] = { icon = "Interface\\ICONS\\trade_engineering", type = 4 },
@@ -175,7 +176,7 @@ NS.SecondsToStrTime = function( seconds ) -- REDEFINED FOR COLORING
 	--
 	local strTime = ( days > 0 and hours == 0 and days .. " day" ) or ( days > 0 and days .. " day " .. hours .. " hr" ) or ( hours > 0 and minutes == 0 and hours .. " hr" ) or ( hours > 0 and hours .. " hr " .. minutes .. " min" ) or ( minutes > 0 and minutes .. " min" ) or seconds .. " sec";
 	-- COLORING - RED/GREEN
-	return ( originalSeconds < NS.db["alertSeconds"] and NS.db["alertType"] ~= "disabled" ) and RED_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE or GREEN_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE;
+	return ( originalSeconds <= NS.db["alertSeconds"] and NS.db["alertType"] ~= "disabled" ) and RED_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE or GREEN_FONT_COLOR_CODE .. strTime .. FONT_COLOR_CODE_CLOSE;
 end
 
 --
@@ -251,11 +252,13 @@ NS.ToggleAlert = function()
 		NS.minimapButtonFlash:SetLooping( "REPEAT" );
 		local a1 = NS.minimapButtonFlash:CreateAnimation( "Alpha" );
 		a1:SetDuration( 0.5 );
-		a1:SetChange( -1 );
+		a1:SetFromAlpha( 1 );
+		a1:SetToAlpha( -1 );
 		a1:SetOrder( 1 );
 		local a2 = NS.minimapButtonFlash:CreateAnimation( "Alpha" );
 		a2:SetDuration( 0.5 );
-		a2:SetChange( 1 );
+		a2:SetFromAlpha( -1 );
+		a2:SetToAlpha( 1 );
 		a2:SetOrder( 2 );
 	end
 	--
@@ -310,7 +313,7 @@ NS.UpdateCharacter = function()
 	-- Buildings
 	NS.db["characters"][k]["buildings"] = {}; -- Out with the old, new awaits us below
 	--
-	for _,building in ipairs( C_Garrison.GetBuildings() ) do
+	for _,building in ipairs( C_Garrison.GetBuildings( NS.garrisonType ) ) do
 		local buildingID,buildingName,_,_,_,rank,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isBeingBuilt,_,_,_,_ = C_Garrison.GetOwnedBuildingInfo( building.plotID );
 		local _,_,shipmentCapacity,shipmentsReady,shipmentsTotal,_,duration,timeleftString,_,_,_,_ = C_Garrison.GetLandingPageShipmentInfo( buildingID );
 		buildingName = NS.BuildingName( buildingName ); -- Resolves shared names
@@ -322,7 +325,7 @@ NS.UpdateCharacter = function()
 				["ordersCapacity"] = shipmentCapacity,
 				["ordersReady"] = shipmentsReady,								-- nil if no orders
 				["ordersTotal"] = shipmentsTotal,								-- nil if no orders
-				["ordersDuration"] = duration,									-- nil if no orders
+				["ordersDuration"] = duration and 14400 or nil,					-- nil if no orders, in 7.0 duration changed to zero when all orders are complete, used to always be 14400
 				["ordersNextSeconds"] = ( function()							-- 0 if no orders
 					local ordersNextSeconds = NS.StrTimeToSeconds( timeleftString );
 					if duration and ordersNextSeconds > duration then
@@ -519,7 +522,7 @@ NS.UpdateAll = function( forceUpdate )
 		NS.selectedCharacterKey = NS.db["characters"][NS.currentCharacter.key]["gCacheSize"] > 0 and NS.currentCharacter.key or nil; -- Sets selected character to current character if they will be included on character dropdown
 		--
 		WOCEventsFrame:RegisterEvent( "GARRISON_SHIPMENT_RECEIVED" ); -- Fires when using one of the Rush Order items
-		hooksecurefunc( "LootWonAlertFrame_SetUp", NS.OnLootGarrisonCache ); -- Fires anytime you get the loot alert frame, but restricts updating to looting the Garrison Cache
+		hooksecurefunc( LootAlertSystem, "AddAlert", NS.OnLootGarrisonCache ); -- Fires anytime you get the loot alert frame, but restricts updating to looting the Garrison Cache
 		--
 		NS.initialized = true;
 	end
@@ -532,7 +535,7 @@ end
 NS.MinimapButton( "WOCMinimapButton", "Interface\\ICONS\\inv_letter_03", {
 	dbpc = "minimapButtonPosition",
 	tooltip = function()
-		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE .. " v" .. NS.versionString );
+		GameTooltip:SetText( HIGHLIGHT_FONT_COLOR_CODE .. NS.title .. FONT_COLOR_CODE_CLOSE );
 		GameTooltip:AddLine( L["Left-Click to open and close"] );
 		GameTooltip:AddLine( L["Drag to move this button"] );
 		GameTooltip:Show();
