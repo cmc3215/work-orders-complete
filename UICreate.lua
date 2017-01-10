@@ -43,7 +43,7 @@ MainFrame = NS.Frame( NS.addon .. "UIMainFrame", UIParent, {
 			ButtonFrameTemplate_HideButtonBar( self );
 		end
 		-- Inset
-		self.Inset:SetPoint( "TOPLEFT", 4, -50 );
+		self.Inset:SetPoint( "TOPLEFT", 4, ( cfg.mainFrame.portrait and -58 or -50 ) );
 		-- Register to run inits
 		self:RegisterEvent( "PLAYER_LOGIN" );
 		-- ShowTab()
@@ -81,7 +81,7 @@ local CreateSubFrameTab = function( index )
 		id = index,
 		setPoint = ( function( self )
 			if index == 1 then
-				return { "BOTTOMLEFT", 0, 0 };
+				return { "BOTTOMLEFT", ( cfg.mainFrame.portrait and 35 or 0 ), ( cfg.mainFrame.portrait and -8 or 0 ) };
 			else
 				return { "LEFT", "$parentTab" .. ( index - 1 ), "RIGHT", 0, 0 };
 			end
@@ -104,7 +104,7 @@ local CreateSubFrame = function( index )
 	return NS.Frame( "Tab" .. index .. "SubFrame", MainFrame, {
 		hidden = true,
 		setPoint = {
-			{ "TOPLEFT", 10, -55 },
+			{ "TOPLEFT", 10, ( cfg.mainFrame.portrait and -63 or -55 ) },
 			{ "BOTTOMRIGHT", -10, ( cfg.mainFrame.buttonBar and 30 or 6 ) },
 		},
 		OnShow = function( self )
