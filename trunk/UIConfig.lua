@@ -348,7 +348,7 @@ NS.UI.cfg = {
 						table.remove( NS.db["characters"], data["ck"] );
 						NS.Print( RED_FONT_COLOR_CODE .. string.format( L["%s deleted"], data["name"] ) .. FONT_COLOR_CODE_CLOSE );
 						-- Reset keys (Exactly like initialize)
-						NS.currentCharacter.key = NS.FindKeyByName( NS.db["characters"], NS.currentCharacter.name ); -- Must be reset when a character is deleted because the keys shift up one
+						NS.currentCharacter.key = NS.FindKeyByField( NS.db["characters"], "name", NS.currentCharacter.name ); -- Must be reset when a character is deleted because the keys shift up one
 						NS.selectedCharacterKey = NS.db["characters"][NS.currentCharacter.key]["gCacheSize"] > 0 and NS.currentCharacter.key or nil; -- Sets selected character to current character if they will be included on character dropdown
 						-- Update and refresh
 						NS.UpdateAll( "forceUpdate" );

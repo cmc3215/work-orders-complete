@@ -292,7 +292,7 @@ end
 NS.UpdateCharacter = function()
 	local newCharacter = false;
 	-- Find/Add Character
-	local k = NS.FindKeyByName( NS.db["characters"], NS.currentCharacter.name ) or #NS.db["characters"] + 1;
+	local k = NS.FindKeyByField( NS.db["characters"], "name", NS.currentCharacter.name ) or #NS.db["characters"] + 1;
 	if not NS.db["characters"][k] then
 		newCharacter = true; -- Flag for sort
 		NS.db["characters"][k] = {
@@ -384,7 +384,7 @@ NS.UpdateBuildings = function()
 		for _,b in ipairs( character["buildings"] ) do -- b is for building
 			if character["monitor"][b["name"]] then
 				-- Add/Find account-wide building data building by name
-				local k = NS.FindKeyByName( buildings, b["name"] ) or #buildings + 1;
+				local k = NS.FindKeyByField( buildings, "name", b["name"] ) or #buildings + 1;
 				if not buildings[k] then
 					buildings[k] = {
 						["name"] = b["name"],
@@ -518,7 +518,7 @@ NS.UpdateAll = function( forceUpdate )
 	end
 	-- Initialize
 	if not NS.initialized then
-		NS.currentCharacter.key = NS.FindKeyByName( NS.db["characters"], NS.currentCharacter.name ); -- Must be reset when character is deleted
+		NS.currentCharacter.key = NS.FindKeyByField( NS.db["characters"], "name", NS.currentCharacter.name ); -- Must be reset when character is deleted
 		NS.selectedCharacterKey = NS.db["characters"][NS.currentCharacter.key]["gCacheSize"] > 0 and NS.currentCharacter.key or nil; -- Sets selected character to current character if they will be included on character dropdown
 		--
 		WOCEventsFrame:RegisterEvent( "GARRISON_SHIPMENT_RECEIVED" ); -- Fires when using one of the Rush Order items
