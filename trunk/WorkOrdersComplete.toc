@@ -1,6 +1,6 @@
-﻿## Interface: 70200
+﻿## Interface: 80000
 ## Title: Work Orders Complete
-## Version: 2.4
+## Version: 2.5
 ## Author: Clinton Caldwell
 ## Notes: Monitors the Work Orders and Garrison Cache of selected characters
 ## SavedVariables: WORKORDERSCOMPLETE_SAVEDVARIABLES
