@@ -1,0 +1,14 @@
+## Interface: 80100
+## Title: Work Orders Complete
+## Version: 2.6
+## Author: Clinton Caldwell
+## Notes: Monitors the Work Orders and Garrison Cache of selected characters
+## SavedVariables: WORKORDERSCOMPLETE_SAVEDVARIABLES
+## SavedVariablesPerCharacter: WORKORDERSCOMPLETE_SAVEDVARIABLESPERCHARACTER
+
+Templates.xml
+Localization.lua
+Base.lua
+WorkOrdersComplete.lua
+UIConfig.lua
+UICreate.lua
