@@ -68,7 +68,7 @@ NS.currentCharacter.TexCoords = function()
 	return left, right, top, bottom;
 end
 --
-NS.garrisonType = LE_GARRISON_TYPE_6_0;
+NS.garrisonType = Enum.GarrisonType.Type_6_0;
 NS.buildingInfo = {
 	--
 	-- Small - 4
@@ -309,7 +309,7 @@ NS.UpdateCharacter = function()
 	NS.currentCharacter.faction = UnitFactionGroup( "player" );
 	NS.db["characters"][k]["faction"] = NS.currentCharacter.faction;
 	-- Update gCacheSize - Players may increase their Garrison Cache size from the base 500 to 750 (Quest-The Assault Base) and 1000 (Item-Trade Agreement: Arakkoa Outcasts)
-	NS.db["characters"][k]["gCacheSize"] = ( IsQuestFlaggedCompleted( 37485 ) and 1000 ) or ( ( IsQuestFlaggedCompleted( 38445 ) or IsQuestFlaggedCompleted( 37935 ) ) and 750 ) or ( ( IsQuestFlaggedCompleted( 35176 ) or IsQuestFlaggedCompleted( 34824 ) ) and 500 ) or 0; -- Faction quests completed for Garrison Cache?
+	NS.db["characters"][k]["gCacheSize"] = (  C_QuestLog.IsQuestFlaggedCompleted( 37485 ) and 1000 ) or ( ( C_QuestLog.IsQuestFlaggedCompleted( 38445 ) or C_QuestLog.IsQuestFlaggedCompleted( 37935 ) ) and 750 ) or ( ( C_QuestLog.IsQuestFlaggedCompleted( 35176 ) or C_QuestLog.IsQuestFlaggedCompleted( 34824 ) ) and 500 ) or 0; -- Faction quests completed for Garrison Cache?
 	-- Buildings
 	NS.db["characters"][k]["buildings"] = {}; -- Out with the old, new awaits us below
 	--
