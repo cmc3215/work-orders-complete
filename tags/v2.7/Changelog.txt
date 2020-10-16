@@ -1,0 +1,96 @@
+**2.7**
+
+- Release date: 10/16/2020
+- Minor compatibility updates for patch 9.0.1. Thanks to CurseForge user carnivean.
+- TOC updated for patch 9.0.1.
+
+**2.6**
+
+- Release date: 12/22/2018
+- TOC updated for patch 8.1.
+
+**2.5**
+
+- Release date: 08/24/2018
+- TOC updated for patch 8.0.1.
+
+**2.4**
+
+- Release date: 03/30/2017
+- TOC updated for patch 7.2.
+
+**2.3**
+
+- Release date: 10/25/2016
+- TOC updated for patch 7.1.
+
+**2.2**
+
+- Release date: 07/19/2016
+- TOC updated for patch 7.0.
+- Minor updates made for compatibility.
+
+**2.1**
+
+- Release date: 03/12/2016
+- Fixed a few text labels and a dropdown that were being truncated when using WoW's Fullscreen as opposed to Windowed mode.
+
+**2.0**
+
+- Release date: 07/17/2015
+- Added detection for Garrison Cache size of 750, all three sizes 500, 750, and 1000 are now supported.
+
+**1.9**
+
+- Release date: 07/16/2015
+- Bug fix, minimap button flashing during combat was causing taint resulting in a Blizzard block message when trying to use some default UI frames such as Glyphs or Talents.
+
+**1.8**
+
+- Release date: 06/25/2015
+- Now supports Garrison Cache size up to 1000 via the new item in patch 6.2 - "Trade Agreement: Arakkoa Outcasts" @ http://www.wowhead.com/item=128294/trade-agreement-arakkoa-outcasts.
+
+**1.7**
+
+- Release date: 06/23/2015
+- Bug fix, later Shipyard ranks will cause LUA errors.
+
+**1.6**
+
+- Release date: 06/23/2015
+- Bug fix, after Shipyard create, LUA error.
+
+**1.5**
+
+- Release date: 06/23/2015
+- TOC updated for patch 6.2.
+- Frame strata now the more appropriate MEDIUM instead of HIGH.
+- Monitor tab visually cleaned up a bit, WOC frame size reduced slightly.
+
+**1.4**
+
+- Release date: 06/13/2015
+- Bug fix, rebuilding a previously owned building that also had more than 1 Work Order in progress could sometimes cause "Ready" to be negative.
+
+**1.3**
+
+- Release date: 06/13/2015
+- Bug fix, rebuilding a previously owned building that also had more than 6-7 Work Orders in progress caused LUA error due to time til next order being days.
+- New option on "Options" tab "Show Character Realms", the default is checked.
+
+**1.2**
+
+- Release date: 06/13/2015
+- Not released.
+
+**1.1**
+
+- Release date: 06/03/2015
+- Bug fix, when using "Create All" for submitting lets says, 15 or more Work Orders, was retrieving slightly inaccurate numbers from Blizzard.
+- Added mouseover highlights to the scrollframe rows listing the individual building data.
+- No longer automatically refreshes the Monitor tab while open, added a "Refresh" button instead, switching tabs or opening and closing the frame still refreshes it.
+
+**1.0**
+
+- Release date: 06/02/2015
+- Initial release.
