@@ -208,7 +208,8 @@ NS.UI.cfg = {
 					template = false,
 					size = { 32, 32 },
 					setPoint = { "LEFT", "#sibling", "RIGHT", 10, 0 },
-					normalTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-RACES",
+					normalTexture = "Interface\\GLUES\\CHARACTERCREATE\\CharacterCreateIcons",
+					highlightTexture = "Interface\\BUTTONS\\UI-Quickslot2",
 					tooltip = function()
 						local cn = NS.db["showCharacterRealms"] and NS.currentCharacter.name or strsplit( "-", NS.currentCharacter.name, 2 );
 						GameTooltip:SetText( cn .. " - " .. L["Ready for pickup"] );
@@ -262,6 +263,13 @@ NS.UI.cfg = {
 				_G[sfn .. "GarrisonCacheNextAllText"]:SetText( "Next Full: " .. gcNextOutFullSeconds .. "\n   All Full: " .. gcAllOutFullSeconds );
 				-- Current Character - Fix My Face
 				_G[sfn .. "CurrentCharacter"]:GetNormalTexture():SetTexCoord( NS.currentCharacter.TexCoords() ); -- Set TexCoords for proper faction/race/sex combo
+				local xyStep = 1 / 5.333333333333333;
+				local left = 1 * xyStep;
+				local right = 1 - xyStep;
+				local top = 1 * xyStep;
+				local bottom = 1 - xyStep;
+				_G[sfn .. "CurrentCharacter"]:GetHighlightTexture():SetTexCoord( left, right, top, bottom ); -- Set TexCoords for proper highlight border
+				_G[sfn .. "CurrentCharacter"]:LockHighlight();
 				-- Current Character - Next Out/Full
 				local ccNextOutFullSeconds;
 				if NS.currentCharacter.nextOutFullSeconds.buildings and NS.currentCharacter.nextOutFullSeconds.garrisonCache then

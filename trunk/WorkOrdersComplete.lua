@@ -34,29 +34,41 @@ NS.currentCharacter = {
 };
 --
 NS.currentCharacter.TexCoords = function()
-	-- Grid: 8 columns, 4 rows
-	local xStep = 1 / 8; -- 0.125
-	local yStep = 1 / 4; -- 0.25
+	-- Grid: 15+ columns, 7+ rows
+	local xStep = 1 / 15.75384615384615; -- 0.0634765625
+	local yStep = 1 / 7.876923076923077; -- 0.126953125
 	--
 	local XY = {
 		-- Alliance
-		["Alliance:Draenei"] = { male = { 5, 1 }, female = { 5, 3 } },
-		["Alliance:Dwarf"] = { male = { 2, 1 }, female = { 2, 3 } },
-		["Alliance:Gnome"] = { male = { 3, 1 }, female = { 3, 3 } },
-		["Alliance:Human"] = { male = { 1, 1 }, female = { 1, 3 } },
-		["Alliance:Night Elf"] = { male = { 4, 1 }, female = { 4, 3 } },
-		["Alliance:Worgen"] = { male = { 6, 1 }, female = { 6, 3 } },
-		["Alliance:Pandaren"] = { male = { 7, 1 }, female = { 7, 3 } },
+		["Alliance:Draenei"] = { male = { 3, 4 }, female = { 3, 3 } },
+		["Alliance:Dwarf"] = { male = { 3, 6 }, female = { 3, 5 } },
+		["Alliance:Gnome"] = { male = { 4, 1 }, female = { 3, 7 } },
+		["Alliance:Human"] = { male = { 4, 7 }, female = { 4, 6 } },
+		["Alliance:Night Elf"] = { male = { 6, 5 }, female = { 6, 4 } },
+		["Alliance:Worgen"] = { male = { 8, 7 }, female = { 8, 6 } },
+		["Alliance:Pandaren"] = { male = { 7, 2 }, female = { 7, 1 } },
+		-- Alliance Allied Races
+		["Alliance:Void Elf"] = { male = { 8, 3 }, female = { 8, 2 } },
+		["Alliance:Lightforged Draenei"] = { male = { 5, 4 }, female = { 5, 3 } },
+		["Alliance:Dark Iron Dwarf"] = { male = { 3, 2 }, female = { 3, 1 } },
+		["Alliance:Kul Tiran"] = { male = { 5, 2 }, female = { 5, 1 } },
+		["Alliance:Mechagnome"] = { male = { 6, 1 }, female = { 5, 7 } },
 		-- Horde
-		["Horde:Blood Elf"] = { male = { 5, 2 }, female = { 5, 4 } },
-		["Horde:Goblin"] = { male = { 6, 2 }, female = { 6, 4 } },
-		["Horde:Orc"] = { male = { 4, 2 }, female = { 4, 4 } },
-		["Horde:Tauren"] = { male = { 1, 2 }, female = { 1, 4 } },
-		["Horde:Troll"] = { male = { 3, 2 }, female = { 3, 4 } },
-		["Horde:Undead"] = { male = { 2, 2 }, female = { 2, 4 } },
-		["Horde:Pandaren"] = { male = { 7, 2 }, female = { 7, 4 } },
+		["Horde:Blood Elf"] = { male = { 2, 7 }, female = { 2, 6 } },
+		["Horde:Goblin"] = { male = { 4, 3 }, female = { 4, 2 } },
+		["Horde:Orc"] = { male = { 6, 7 }, female = { 6, 6 } },
+		["Horde:Tauren"] = { male = { 7, 4 }, female = { 7, 3 } },
+		["Horde:Troll"] = { male = { 7, 6 }, female = { 7, 5 } },
+		["Horde:Undead"] = { male = { 8, 1 }, female = { 7, 7 } },
+		["Horde:Pandaren"] = { male = { 7, 2 }, female = { 7, 1 } },
+		-- Horde Allied Races
+		["Horde:Nightborne"] = { male = { 6, 3 }, female = { 6, 2 } },
+		["Horde:Highmountain Tauren"] = { male = { 4, 5 }, female = { 4, 4 } },
+		["Horde:Zandalari Troll"] = { male = { 10, 1 }, female = { 9, 1 } },
+		["Horde:Mag'har Orc"] = { male = { 5, 6 }, female = { 5, 5 } },
+		["Horde:Vulpera"] = { male = { 8, 5 }, female = { 8, 4 } },
 		-- Neutral
-		["Neutral:Pandaren"] = { male = { 7, 1 }, female = { 7, 3 } }, -- Reuses Alliance:Pandaren
+		["Neutral:Pandaren"] = { male = { 7, 2 }, female = { 7, 1 } }, -- Reuses Alliance:Pandaren
 	};
 	local xPos, yPos = unpack( XY[NS.currentCharacter.faction .. ":" .. NS.currentCharacter.race][NS.currentCharacter.sex] );
 	--
