@@ -1,3 +1,8 @@
+**2.8**
+
+- Release date: 10/18/2020
+- Updated player icon texture path and coordinates for supporting Allied Races
+
 **2.7**
 
 - Release date: 10/16/2020
